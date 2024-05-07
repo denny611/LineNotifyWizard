@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LineNotifyWizard</string>
+    <string name="service_name">LNWLisen</string>
 </resources>
