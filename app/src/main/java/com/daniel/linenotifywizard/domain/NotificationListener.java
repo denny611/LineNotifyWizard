@@ -1,10 +1,15 @@
-package com.daniel.linenotifywizard;
+package com.daniel.linenotifywizard.domain;
 
 import android.app.Notification;
 import android.app.Service;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
+import com.daniel.linenotifywizard.data.MessageRepository;
+import com.daniel.linenotifywizard.data.MessageRepositoryImpl;
+import com.daniel.linenotifywizard.model.NotifyMessage;
+
+import java.util.List;
 
 public class NotificationListener extends NotificationListenerService {
     @Override
@@ -27,6 +32,7 @@ public class NotificationListener extends NotificationListenerService {
         if(sbn.getPackageName().compareTo("jp.naver.line.android") == 0) {
             Log.e("LNW", sbn.toString());
             Log.e("LNW", (String) sbn.getNotification().tickerText);
+            String key = sbn.getKey();
             String title = (String) sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE);
             if(title == null) {
                 title = "null";
@@ -47,7 +53,10 @@ public class NotificationListener extends NotificationListenerService {
                 sub = "null";
             }
             Log.e("LNW","SUB "+ sub);
-
+            MessageRepository messageRepository =  MessageRepositoryImpl.Companion.getInstance();
+            messageRepository.addNotify(new NotifyMessage(key,title, data));
+            List<NotifyMessage> l =  messageRepository.getAllNotify();
+            Log.e("LNW",l.get(l.size()-1).toString());
         }
     }
 
