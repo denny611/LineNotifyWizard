@@ -3,7 +3,6 @@ package com.daniel.linenotifywizard
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -15,9 +14,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityCompat.startActivityForResult
+import com.daniel.linenotifywizard.domain.NotifyMangerService
 import com.daniel.linenotifywizard.ui.theme.LineNotifyWizardTheme
 
 
@@ -65,6 +64,7 @@ fun FilledButton() {
     ){
         Text("Request Permission")
     }
+    LocalContext.current.startService(Intent( LocalContext.current, NotifyMangerService::class.java))
 }
 
 @Preview(showBackground = true)
