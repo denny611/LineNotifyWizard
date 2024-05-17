@@ -25,10 +25,11 @@ class NotificationListener : NotificationListenerService() {
      * (package name).
      */
     override fun onNotificationPosted(sbn: StatusBarNotification) {
+       // cancelNotification(sbn.key)
         super.onNotificationPosted(sbn)
         if (sbn.packageName.compareTo("jp.naver.line.android") == 0) {
+        //if (sbn.packageName.compareTo("com.google.android.apps.messaging") != 0) {
             Log.e("LNW", sbn.toString())
-            Log.e("LNW", (sbn.notification.tickerText as String))
             val key = sbn.key
             var title = sbn.notification.extras.getCharSequence(Notification.EXTRA_TITLE) as String?
             if (title == null) {

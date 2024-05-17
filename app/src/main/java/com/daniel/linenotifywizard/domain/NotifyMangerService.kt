@@ -1,9 +1,18 @@
 package com.daniel.linenotifywizard.domain
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import com.daniel.linenotifywizard.R
 import com.daniel.linenotifywizard.data.MessageRepository
 import com.daniel.linenotifywizard.data.MessageRepositoryImpl
 import kotlinx.coroutines.CoroutineScope
@@ -30,13 +39,16 @@ class NotifyMangerService : Service(
         Log.e("LNW", "updateNotify")
         val events = noteRepository.getAllNotify()
         events.collect{value -> println("Collected LNW $value")
+            sendNotify(value.msgTitle, value.msgText)
         }
         //if(l.isNotEmpty())
          //   Log.e("LNW-M", l[l.size - 1].toString())
 
+
     }
     init {
         noteRepository = MessageRepositoryImpl.getInstance()
+
     }
 
     /**
@@ -60,6 +72,47 @@ class NotifyMangerService : Service(
      * @return Return an IBinder through which clients can call on to the
      * service.
      */
+
+    fun sendNotify(title:String, text:String) {
+        val CHANNEL_ID = "0"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the NotificationChannel.
+            val name = getString(R.string.channel_name)
+            val descriptionText = getString(R.string.channel_description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
+            mChannel.description = descriptionText
+            // Register the channel with the system. You can't change the importance
+            // or other notification behaviors after this.
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(mChannel)
+        }
+        val builder = NotificationCompat
+            .Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        val id = 0
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            /* requestPermissions(this.applicationContext,
+                 arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                 0)*/
+        }
+        Log.e("LNWNotifyMangerService","notify fired");
+        NotificationManagerCompat.from(this).notify(id, builder.build())
+    }
     override fun onBind(intent: Intent?): IBinder? {
         TODO("Not yet implemented")
     }

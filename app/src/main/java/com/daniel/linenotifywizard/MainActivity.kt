@@ -36,7 +36,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
+        requestPermissions(
+            arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+            0
+        )
     }
 }
 
@@ -52,6 +55,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun FilledButton() {
     // Create a launcher for starting the activity
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { /* Handle the result if needed */ }

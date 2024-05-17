@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">LineNotifyWizard</string>
     <string name="service_name">LNWLisen</string>
+    <string name="channel_name">channel_name</string>
+    <string name="channel_description">channel_description</string>
 </resources>
